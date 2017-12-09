@@ -42,7 +42,7 @@ public class DetailActivity extends AppCompatActivity {
      */
     private Intent createShareForecastIntent() {
         Intent shareIntent = ShareCompat.IntentBuilder.from(this)
-                .setType("text/plain")
+                .setType("text/foobar")
                 .setText(mForecast + FORECAST_SHARE_HASHTAG)
                 .getIntent();
         return shareIntent;

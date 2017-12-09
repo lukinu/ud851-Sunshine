@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,19 +40,25 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity implements ForecastAdapterOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    /*Set location */
+    private final String address = "1600 Amphitheatre Parkway,CA";
 
+    private Uri mLocationUri;
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
-
     private TextView mErrorMessageDisplay;
-
     private ProgressBar mLoadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
-
+        /*Build a Uri of the location     */
+        mLocationUri = new Uri.Builder().
+                scheme("geo").
+                path("0,0").
+                query(address).
+                build();
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
          * do things like set the adapter of the RecyclerView and toggle the visibility.
@@ -215,14 +220,25 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_refresh) {
-            mForecastAdapter.setWeatherData(null);
-            loadWeatherData();
-            return true;
+        switch (id) {
+            case R.id.action_refresh: {
+                mForecastAdapter.setWeatherData(null);
+                loadWeatherData();
+                return true;
+            }
+            // COMPLETED (2) Launch the map when the map menu item is clicked
+            case R.id.action_map: {
+                openLocationOnMap(mLocationUri);
+            }
         }
-
-        // TODO (2) Launch the map when the map menu item is clicked
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openLocationOnMap(Uri uri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.putExtra(Intent.EXTRA_TEXT, uri);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }
