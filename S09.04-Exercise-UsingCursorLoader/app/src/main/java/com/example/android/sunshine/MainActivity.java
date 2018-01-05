@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
                     null,
                     WeatherContract.WeatherEntry.getSqlSelectForTodayOnwards(),
                     null,
-                    WeatherContract.WeatherEntry.COLUMN_DATE + "ASC");
+                    WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
         } else {
             try {
                 throw new Exception("Unknown loader " + id);
