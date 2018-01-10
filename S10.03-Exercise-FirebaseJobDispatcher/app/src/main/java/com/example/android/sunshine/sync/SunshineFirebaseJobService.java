@@ -33,7 +33,7 @@ public class SunshineFirebaseJobService extends JobService {
         mFetchWeatherTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                SunshineSyncUtils.startImmediateSync(SunshineFirebaseJobService.this);
+                SunshineSyncUtils.startImmediateSync(getApplicationContext());
                 return null;
             }
 
