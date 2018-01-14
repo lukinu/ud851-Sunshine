@@ -17,6 +17,7 @@ package com.example.android.sunshine.sync;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.JobParameters;
@@ -26,12 +27,13 @@ import com.firebase.jobdispatcher.RetryStrategy;
 
 public class SunshineFirebaseJobService extends JobService {
 
+    private static final String LOG_TAG = SunshineFirebaseJobService.class.getSimpleName();
     private AsyncTask<Void, Void, Void> mFetchWeatherTask;
 
     /**
      * The entry point to your Job. Implementations should offload work to another thread of
      * execution as soon as possible.
-     *
+     * <p>
      * This is called by the Job Dispatcher to tell us we should start our job. Keep in mind this
      * method is run on the application's main thread, so we need to offload work to a background
      * thread.
@@ -41,10 +43,11 @@ public class SunshineFirebaseJobService extends JobService {
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
 
-        mFetchWeatherTask = new AsyncTask<Void, Void, Void>(){
+        mFetchWeatherTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
                 Context context = getApplicationContext();
+                Log.d(LOG_TAG, "begin syncing data");
                 SunshineSyncTask.syncWeather(context);
                 jobFinished(jobParameters, false);
                 return null;
