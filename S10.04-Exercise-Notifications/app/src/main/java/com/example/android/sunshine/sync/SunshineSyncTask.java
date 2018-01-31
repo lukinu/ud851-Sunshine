@@ -18,14 +18,24 @@ package com.example.android.sunshine.sync;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
+import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
 import com.example.android.sunshine.utilities.NetworkUtils;
+import com.example.android.sunshine.utilities.NotificationUtils;
 import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 
 import java.net.URL;
 
 public class SunshineSyncTask {
+
+    /*
+    this variant of MSEC_IN_DAY is here for debugging purposes only
+    */
+    //    private static final long MSEC_IN_DAY = 20;
+    private static final long MSEC_IN_DAY = 24 * 3600 * 1000;
+    private static final String LOG_TAG = SunshineSyncTask.class.getSimpleName();
 
     /**
      * Performs the network request for updated weather, parses the JSON from that request, and
@@ -73,14 +83,16 @@ public class SunshineSyncTask {
                         WeatherContract.WeatherEntry.CONTENT_URI,
                         weatherValues);
 
-//              TODO (13) Check if notifications are enabled
-
-//              TODO (14) Check if a day has passed since the last notification
-
-//              TODO (15) If more than a day have passed and notifications are enabled, notify the user
-
+//              COMPLETED (13) Check if notifications are enabled
+                if (SunshinePreferences.isNotificationEnabled(context)) {
+//              COMPLETED (14) Check if a day has passed since the last notification
+                    if (SunshinePreferences.getEllapsedTimeSinceLastNotification(context) > MSEC_IN_DAY) {
+//              COMPLETED (15) If more than a day have passed and notifications are enabled, notify the user
+                        Log.d(LOG_TAG, "begin notify user ");
+                        NotificationUtils.notifyUserOfNewWeather(context);
+                    }
+                }
             /* If the code reaches this point, we have successfully performed our sync */
-
             }
 
         } catch (Exception e) {
